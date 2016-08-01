@@ -36,7 +36,7 @@ public class GiveawayParser
 
     private void ClearErr()
     {
-        errMess="";
+        errMess = "";
     }
 
     public void updateContent()
@@ -137,6 +137,20 @@ public class GiveawayParser
         }
         String link = el.attr("href");
         return link.split("/")[2];
+    }
+
+    public boolean IsGivieawayEntered(int n)
+    {
+        Element ell = pageDoc.getElementsByClass("giveaway__row-outer-wrap").get(n);
+        Element el = ell.getElementsByTag("div").get(1);
+                //.getElementsByClass("giveaway__row-inner-wrap is-faded");
+        //Element el = els.get(0);
+        if (el.hasClass("is-faded"))
+        {
+            return true;
+        }
+        return false;
+
     }
 
 

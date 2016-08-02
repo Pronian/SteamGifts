@@ -18,7 +18,7 @@ public class POSTEnterGiveaway extends AsyncTask<String, Void, String>
     protected String doInBackground(String... params) {
         //do your request in here so that you don't interrupt the UI thread
         try {
-            return uploadContent(params[0], params[1], params[2], params[3]);
+            return uploadContent(params[0], params[1], params[2], params[3], params[4]);
         } catch (IOException e) {
             return "Unable to retrieve data. URL may be invalid.";
         }
@@ -30,7 +30,7 @@ public class POSTEnterGiveaway extends AsyncTask<String, Void, String>
         //Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
     }
 
-    private String uploadContent(String myurl, String cookie, String XSRFtoken, String ga_id) throws IOException
+    private String uploadContent(String myurl, String cookie, String XSRFtoken, String ga_id, String command) throws IOException
     {
         InputStream is = null;
 
@@ -45,7 +45,7 @@ public class POSTEnterGiveaway extends AsyncTask<String, Void, String>
             ContentValues vals = new ContentValues();
             vals.put("xsrf_token", XSRFtoken + "&");
             vals.put("code", ga_id );
-            vals.put("do", "entry_insert"+ "&");
+            vals.put("do", command+ "&");
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -47,7 +46,9 @@ public class GiveawaysActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        giveawayParser = new GiveawayParser(getString(R.string.sg_recommended),this);
+        setTitle(getString(R.string.sg_mainpage_title));
+
+        giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage),this);
 
         //Recycler View Start
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -55,35 +56,25 @@ public class GiveawaysActivity extends AppCompatActivity
         adapter = new GiveawayAdapter(giveawayList);
         recyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // specify an adapter (see also next example)
-
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-
-
         //Recycler View End
 
-        //TextView t = (TextView) findViewById(R.id.temptxt);
-
-
-        //t.setText(giveawayParser.getLevel() + giveawayParser.getGiveawayNumber() + giveawayParser.getGiveawayNameAndPoints(0) + " " + giveawayParser.getXSRFtoken());
-        //POSTEnterGiveaway eg = new POSTEnterGiveaway();
-        //eg.execute(getString(R.string.sg_enter_link),CookieSync.getCookie(this), giveawayParser.getXSRFtoken(), "P2KNa");
         prepareGiveawayData();
 
     }
 
     private void prepareGiveawayData()
     {
+        giveawayList.clear();
         GiveawayRowData ga;
         int n = giveawayParser.getGiveawayNumber();
         for (int i = 0; i < n; i++)
         {
-            ga = new GiveawayRowData(giveawayParser.getGiveawayNameAndPoints(i),giveawayParser.IsGivieawayEntered(i), giveawayParser.getGiveawayID(i),giveawayParser.getGiveawayID(i),giveawayParser.getGiveawayID(i));
+            ga = new GiveawayRowData(giveawayParser.getGiveawayNameAndPoints(i),giveawayParser.IsGivieawayEntered(i), giveawayParser.getTimeLeft(i) + " • " + giveawayParser.getEntriesAndComments(i),giveawayParser.getGiveawayID(i),giveawayParser.getGiveawayID(i));
             giveawayList.add(ga);
         }
         adapter.notifyDataSetChanged();
@@ -136,32 +127,39 @@ public class GiveawaysActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
     {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera)
+        if (id == R.id.nav_all)
         {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery)
-        {
+            giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage),this);
+            setTitle(getString(R.string.sg_mainpage_title));
 
-        } else if (id == R.id.nav_slideshow)
+        } else if (id == R.id.nav_wishlist)
         {
-
-        } else if (id == R.id.nav_manage)
+            giveawayParser = new GiveawayParser(getString(R.string.sg_wishlist),this);
+            setTitle(getString(R.string.sg_wishlist_title));
+        } else if (id == R.id.nav_recommended)
         {
-
-        } else if (id == R.id.nav_share)
+            giveawayParser = new GiveawayParser(getString(R.string.sg_recommended),this);
+            setTitle(getString(R.string.sg_recommended_title));
+        } else if (id == R.id.nav_group)
         {
-
+            giveawayParser = new GiveawayParser(getString(R.string.sg_group),this);
+            setTitle(getString(R.string.sg_group_title));
+        } else if (id == R.id.nav_new)
+        {
+            giveawayParser = new GiveawayParser(getString(R.string.sg_new),this);
+            setTitle(getString(R.string.sg_new_title));
         } else if (id == R.id.nav_send)
         {
 
         }
+        prepareGiveawayData();
+        txtPoints.setText(giveawayParser.getPoints());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

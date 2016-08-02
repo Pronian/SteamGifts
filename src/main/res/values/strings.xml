@@ -5,20 +5,28 @@
     <string name="cookie_key">COOKIE</string>
     <string name="title_activity_giveaways">"All"</string>
     <string name="sg_mainpage">"https://www.steamgifts.com"</string>
-    <string name="sg_mainpage_title">"All"</string>
+    <string name="sg_mainpage_title">"All Giveaways"</string>
     <string name="sg_wishlist">"https://www.steamgifts.com/giveaways/search?type=wishlist"</string>
     <string name="sg_wishlist_title">Wishlist</string>
     <string name="sg_recommended">"https://www.steamgifts.com/giveaways/search?type=recommended"</string>
     <string name="sg_recommended_title">Recomended</string>
+    <string name="sg_group">"https://www.steamgifts.com/giveaways/search?type=group"</string>
+    <string name="sg_group_title">Group</string>
+    <string name="sg_new">"https://www.steamgifts.com/giveaways/search?type=new"</string>
+    <string name="sg_new_title">New Giveaways</string>
 
     <string name="sg_enter_link">"https://www.steamgifts.com/ajax.php"</string>
 
+    <string name="succ_enter">"Giveaway entered!"</string>
+    <string name="succ_leave">"Giveaway left!"</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="err_connection">"Couldn't connect to SteamGifts!"</string>
     <string name="err_logged_out">"Logged out!"</string>
     <string name="err_no_content">"SteamGifts appears to be down or inaccessible!"</string>
+<string name="command_enter">entry_insert</string>
+    <string name="command_leave">entry_delete</string>
 
     <string name="action_settings">Settings</string>
 </resources>

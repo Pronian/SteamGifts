@@ -153,5 +153,36 @@ public class GiveawayParser
 
     }
 
+    public String getTimeLeft(int n)
+    {
+        Element ell = pageDoc.getElementsByClass("giveaway__row-outer-wrap").get(n).getElementsByClass("giveaway__columns").first();
+        if (ell == null)
+        {
+            errMess = context.getResources().getString(R.string.err_no_content);
+            return "";
+        }
+        Element el = ell.getElementsByTag("span").first();
+        if (el == null)
+        {
+            errMess = context.getResources().getString(R.string.err_no_content);
+            return "";
+        }
+
+        return el.text();
+    }
+
+    public String getEntriesAndComments(int n)
+    {
+        Element ell = pageDoc.getElementsByClass("giveaway__row-outer-wrap").get(n).getElementsByClass("giveaway__links").first();
+        if (ell == null)
+        {
+            errMess = context.getResources().getString(R.string.err_no_content);
+            return "";
+        }
+        Element entries = ell.getElementsByTag("span").get(0);
+        Element comments = ell.getElementsByTag("span").get(1);
+        return entries.text() + " • " +comments.text();
+    }
+
 
 }

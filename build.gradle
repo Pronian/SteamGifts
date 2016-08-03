@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 3
-        versionName "0.3"
+        versionName "0.4"
     }
     buildTypes {
         release {
@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:design:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.+'
     compile files('libs/jsoup-1.9.2.jar')
+    compile files('libs/picasso-2.5.2.jar')
 }

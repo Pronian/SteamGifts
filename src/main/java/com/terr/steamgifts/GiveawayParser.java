@@ -184,5 +184,25 @@ public class GiveawayParser
         return entries.text() + " • " +comments.text();
     }
 
+    public String getImageUrl(int n)
+    {
+        try
+        {
+            Element ell = pageDoc.getElementsByClass("giveaway__row-outer-wrap").get(n).getElementsByClass("global__image-inner-wrap").get(1);
+            if (ell == null)
+            {
+                errMess = context.getResources().getString(R.string.err_no_content);
+                return "";
+            }
+            String partial = ell.attr("style").split("\\(")[1];
+            return partial.substring(0,partial.length()-2);
+        }
+        catch (Exception e)
+        {
+            return "";
+        }
+
+    }
+
 
 }

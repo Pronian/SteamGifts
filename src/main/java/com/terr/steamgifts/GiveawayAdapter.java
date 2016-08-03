@@ -2,11 +2,14 @@ package com.terr.steamgifts;
 
 
 import android.graphics.Color;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -16,12 +19,15 @@ private List<GiveawayRowData> giveawayList;
 
 public class GiveawayViewHolder extends RecyclerView.ViewHolder {
     public TextView title, timeRemaining, entries;
+    public ImageView image;
 
     public GiveawayViewHolder(View view) {
         super(view);
         title = (TextView) view.findViewById(R.id.title);
         timeRemaining = (TextView) view.findViewById(R.id.time);
         entries = (TextView) view.findViewById(R.id.entries);
+        image = (ImageView) view.findViewById(R.id.image);
+
     }
 }
 
@@ -44,6 +50,8 @@ public class GiveawayViewHolder extends RecyclerView.ViewHolder {
         holder.title.setText(ga.title);
         holder.timeRemaining.setText(ga.timeRemaining);
         holder.entries.setText(ga.entries);
+        Picasso.with(holder.itemView.getContext()).load(ga.url).into(holder.image);
+        // DownloadImageTask(holder.image).execute(ga.url);
         if (ga.isEntered)
         {
             int color = holder.itemView.getContext().getResources().getColor(R.color.giveawayEntered);

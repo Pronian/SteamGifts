@@ -1,36 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:clickable="true"
-                android:background="?android:attr/selectableItemBackground"
-                android:orientation="vertical">
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:clickable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:columnCount="2"
+            android:rowCount="3"
+            android:alignmentMode="alignBounds"
+            android:columnOrderPreserved="false"
+            android:orientation="horizontal"
+            android:useDefaultMargins="false">
 
-    <TextView
-        android:id="@+id/title"
-        android:textColor="@color/colorPrimary"
-        android:textSize="15dp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/title"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill"
+            android:layout_width="0dp"
+            />
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_below="@id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/entries"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="0dp"
+            android:layout_columnWeight="2.2"
+            />
 
-    <TextView
-        android:id="@+id/entries"
-        android:textColor="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/time"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="0dp"
+            android:layout_columnWeight="2.2"
+            android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+
+    <ImageView
+        android:id="@+id/image"
+
+        android:scaleType="fitEnd"
+        android:layout_column="1"
+        android:layout_columnSpan="1"
+        android:layout_row="1"
+        android:layout_rowSpan="2"
+        android:layout_gravity="fill"
+        android:layout_width="0dp"
+        android:layout_columnWeight="1"/>
+
+</GridLayout>

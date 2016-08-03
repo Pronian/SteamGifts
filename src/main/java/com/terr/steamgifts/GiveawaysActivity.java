@@ -1,5 +1,7 @@
 package com.terr.steamgifts;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -28,6 +30,7 @@ public class GiveawaysActivity extends AppCompatActivity
     private GiveawayAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<GiveawayRowData> giveawayList = new ArrayList<>();
+    //private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,6 +51,8 @@ public class GiveawaysActivity extends AppCompatActivity
 
         setTitle(getString(R.string.sg_mainpage_title));
 
+
+
         giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage),this);
 
         //Recycler View Start
@@ -63,21 +68,21 @@ public class GiveawaysActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
         //Recycler View End
 
-        prepareGiveawayData();
+        prepareGiveawayData(true);
 
     }
 
-    private void prepareGiveawayData()
+    private void prepareGiveawayData(boolean notify)
     {
         giveawayList.clear();
         GiveawayRowData ga;
         int n = giveawayParser.getGiveawayNumber();
         for (int i = 0; i < n; i++)
         {
-            ga = new GiveawayRowData(giveawayParser.getGiveawayNameAndPoints(i),giveawayParser.IsGivieawayEntered(i), giveawayParser.getTimeLeft(i) + " • " + giveawayParser.getEntriesAndComments(i),giveawayParser.getGiveawayID(i),giveawayParser.getGiveawayID(i));
+            ga = new GiveawayRowData(giveawayParser.getGiveawayNameAndPoints(i),giveawayParser.IsGivieawayEntered(i), giveawayParser.getTimeLeft(i), giveawayParser.getEntriesAndComments(i),giveawayParser.getImageUrl(i),giveawayParser.getGiveawayID(i));
             giveawayList.add(ga);
         }
-        adapter.notifyDataSetChanged();
+        if(notify)adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -130,39 +135,72 @@ public class GiveawaysActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
     {
+        String page = "";
+        String title = "";
+        final Context context = this.getApplicationContext();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_all)
         {
-            giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage),this);
-            setTitle(getString(R.string.sg_mainpage_title));
+            page = getString(R.string.sg_mainpage);
+            title = getString(R.string.sg_mainpage_title);
 
         } else if (id == R.id.nav_wishlist)
         {
-            giveawayParser = new GiveawayParser(getString(R.string.sg_wishlist),this);
-            setTitle(getString(R.string.sg_wishlist_title));
+            page = getString(R.string.sg_wishlist);
+            title = getString(R.string.sg_wishlist_title);
         } else if (id == R.id.nav_recommended)
         {
-            giveawayParser = new GiveawayParser(getString(R.string.sg_recommended),this);
-            setTitle(getString(R.string.sg_recommended_title));
+            page = getString(R.string.sg_recommended);
+            title = getString(R.string.sg_recommended_title);
         } else if (id == R.id.nav_group)
         {
-            giveawayParser = new GiveawayParser(getString(R.string.sg_group),this);
-            setTitle(getString(R.string.sg_group_title));
+            page = getString(R.string.sg_group);
+            title = getString(R.string.sg_group_title);
         } else if (id == R.id.nav_new)
         {
-            giveawayParser = new GiveawayParser(getString(R.string.sg_new),this);
-            setTitle(getString(R.string.sg_new_title));
+            page = getString(R.string.sg_new);
+            title = getString(R.string.sg_new_title);
         } else if (id == R.id.nav_send)
         {
 
         }
-        prepareGiveawayData();
-        txtPoints.setText(giveawayParser.getPoints());
+        final String fPage = page;
+        final String fTitle = title;
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Thread mThread = new Thread() {
+            @Override
+            public void run() {
+                giveawayParser = new GiveawayParser(fPage,context);
+                prepareGiveawayData(false);
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        adapter.notifyDataSetChanged();
+                        txtPoints.setText(giveawayParser.getPoints());
+                        setTitle(fTitle);
+                        layoutManager.scrollToPosition(0);
+                        progressDialog.dismiss();
+                    }
+                });
+
+
+            }
+        };
+        mThread.start();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        //progressDialog.cancel();
         return true;
     }
 }

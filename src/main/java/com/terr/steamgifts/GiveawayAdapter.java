@@ -50,8 +50,8 @@ public class GiveawayViewHolder extends RecyclerView.ViewHolder {
         holder.title.setText(ga.title);
         holder.timeRemaining.setText(ga.timeRemaining);
         holder.entries.setText(ga.entries);
-        Picasso.with(holder.itemView.getContext()).load(ga.url).into(holder.image);
-        // DownloadImageTask(holder.image).execute(ga.url);
+        if(!ga.url.isEmpty()) Picasso.with(holder.itemView.getContext()).load(ga.url).into(holder.image);
+        else holder.image.setImageResource(0);
         if (ga.isEntered)
         {
             int color = holder.itemView.getContext().getResources().getColor(R.color.giveawayEntered);

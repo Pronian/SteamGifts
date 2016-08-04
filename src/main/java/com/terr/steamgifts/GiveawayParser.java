@@ -2,6 +2,7 @@ package com.terr.steamgifts;
 
 
 import android.content.Context;
+import android.net.ParseException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -202,6 +203,49 @@ public class GiveawayParser
             return "";
         }
 
+    }
+
+    public GiveawayRowData getGiveaway(int n) throws SiteDataException
+    {
+        String sUrl = "";
+        Element url;
+        Element giveaway = pageDoc.getElementsByClass("giveaway__row-outer-wrap").get(n);
+        if(giveaway == null)
+        {
+            throw new SiteDataException(context.getResources().getString(R.string.err_no_content));
+        }
+        Element nameAndPoints = giveaway.getElementsByClass("giveaway__heading").get(0);
+        String name = nameAndPoints.text();
+        Element ID = giveaway.getElementsByClass("giveaway__heading__name").get(0);
+        Element divFade = giveaway.getElementsByTag("div").get(1);
+        Element timeLeft1 = giveaway.getElementsByClass("giveaway__columns").first();
+        if(timeLeft1 == null || ID == null || divFade == null)
+        {
+            throw new SiteDataException(context.getResources().getString(R.string.err_no_content));
+        }
+        Element timeLeft2 = timeLeft1.getElementsByTag("span").first();
+        Element entriesAndComments = giveaway.getElementsByClass("giveaway__links").first();
+        Element entries = entriesAndComments.getElementsByTag("span").get(0);
+        Element comments = entriesAndComments.getElementsByTag("span").get(1);
+        Elements iurl = giveaway.getElementsByClass("global__image-inner-wrap");
+        if(iurl != null && iurl.size() > 1)
+        {
+            url = iurl.get(1);
+            sUrl = url.attr("style").split("\\(")[1];
+            sUrl = sUrl.substring(0,sUrl.length()-2);
+        }
+        if(timeLeft2 == null || entries == null || comments == null)
+        {
+            throw new SiteDataException(context.getResources().getString(R.string.err_no_content));
+        }
+
+        return new GiveawayRowData(nameAndPoints.text(),
+                divFade.hasClass("is-faded"),
+                timeLeft2.text(),
+                entries.text() + " • " +comments.text(),
+                sUrl,
+                ID.attr("href").split("/")[2]
+                );
     }
 
 

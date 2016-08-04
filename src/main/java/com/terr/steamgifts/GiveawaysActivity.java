@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,18 @@ import java.util.List;
 public class GiveawaysActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
-    TextView txtPoints;
+    public TextView txtPoints;
     GiveawayParser giveawayParser;
     private RecyclerView recyclerView;
     private GiveawayAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<GiveawayRowData> giveawayList = new ArrayList<>();
-    //private ProgressDialog progressDialog;
+    private String error = "";
+    //TODO refresh button
+    //TODO multiple pages
+    //TODO mark featured
+    //TODO hide featured option
+    //TODO no giveaways found message
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,12 +58,11 @@ public class GiveawaysActivity extends AppCompatActivity
         setTitle(getString(R.string.sg_mainpage_title));
 
 
-
-        giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage),this);
+        giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage), this);
 
         //Recycler View Start
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new EnterGAClickListener(giveawayList,giveawayParser,this) ));
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new EnterGAClickListener(giveawayList, giveawayParser, this)));
         adapter = new GiveawayAdapter(giveawayList);
         recyclerView.setHasFixedSize(true);
 
@@ -75,14 +80,19 @@ public class GiveawaysActivity extends AppCompatActivity
     private void prepareGiveawayData(boolean notify)
     {
         giveawayList.clear();
-        GiveawayRowData ga;
+        error = "";
         int n = giveawayParser.getGiveawayNumber();
-        for (int i = 0; i < n; i++)
+        try
         {
-            ga = new GiveawayRowData(giveawayParser.getGiveawayNameAndPoints(i),giveawayParser.IsGivieawayEntered(i), giveawayParser.getTimeLeft(i), giveawayParser.getEntriesAndComments(i),giveawayParser.getImageUrl(i),giveawayParser.getGiveawayID(i));
-            giveawayList.add(ga);
+            for (int i = 0; i < n; i++)
+            {
+                giveawayList.add(giveawayParser.getGiveaway(i));
+            }
+        } catch (SiteDataException e)
+        {
+            error = e.getMessage();
         }
-        if(notify)adapter.notifyDataSetChanged();
+        if (notify) adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -174,10 +184,12 @@ public class GiveawaysActivity extends AppCompatActivity
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
-        Thread mThread = new Thread() {
+        Thread mThread = new Thread()
+        {
             @Override
-            public void run() {
-                giveawayParser = new GiveawayParser(fPage,context);
+            public void run()
+            {
+                giveawayParser = new GiveawayParser(fPage, context);
                 prepareGiveawayData(false);
                 runOnUiThread(new Runnable()
                 {
@@ -189,6 +201,11 @@ public class GiveawaysActivity extends AppCompatActivity
                         setTitle(fTitle);
                         layoutManager.scrollToPosition(0);
                         progressDialog.dismiss();
+                        if(!error.isEmpty())
+                        {
+                            //TODO replace with popup error
+                            Toast.makeText(context,error,Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 

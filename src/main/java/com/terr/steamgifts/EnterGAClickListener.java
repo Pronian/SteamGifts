@@ -1,10 +1,12 @@
 package com.terr.steamgifts;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -13,22 +15,24 @@ import java.util.concurrent.ExecutionException;
 public class EnterGAClickListener implements ClickListener
 {
     private Context context;
+    private GiveawaysActivity activity;
     private List<GiveawayRowData> giveawayList;
     private GiveawayParser giveawayParser;
 
     public String resultType;
     public int resultPoints;
 
-    public EnterGAClickListener(List<GiveawayRowData> giveawayList , GiveawayParser giveawayParser,Context context)
+    public EnterGAClickListener(List<GiveawayRowData> giveawayList , GiveawayParser giveawayParser, GiveawaysActivity a)
     {
         this.giveawayList = giveawayList;
         this.giveawayParser =giveawayParser;
-        this.context = context;
+        this.context = a;
+        this.activity = a;
     }
 
     @Override
     public void onClick(View view, int position) {
-        String result;
+        String result = "Parse error";
         GiveawayRowData ga = giveawayList.get(position);
         POSTEnterGiveaway eg = new POSTEnterGiveaway();
         try
@@ -53,6 +57,7 @@ public class EnterGAClickListener implements ClickListener
             }
 
             result = eg.execute(context.getResources().getString(R.string.sg_enter_link), CookieSync.getCookie(context), giveawayParser.getXSRFtoken(), ga.sg_id, command).get();
+
             JSONObject jObject = new JSONObject(result);
             resultType = jObject.getString("type");
             resultPoints = jObject.getInt("points");
@@ -62,8 +67,19 @@ public class EnterGAClickListener implements ClickListener
                 view.setBackgroundColor(color);
                 Toast.makeText(context, mess , Toast.LENGTH_LONG).show();
             }
+            else if(resultType.equals("error"))
+            {
+                mess = jObject.getString("msg");
+                Toast.makeText(context, mess , Toast.LENGTH_LONG).show();
+            }
+            activity.txtPoints.setText(resultPoints + "P ");
 
-        } catch (Exception e)
+        }
+        catch (JSONException e)
+        {
+            Toast.makeText(context, result , Toast.LENGTH_LONG).show();
+        }
+        catch (Exception e)
         {
             //TODO Add error popup
             e.printStackTrace();

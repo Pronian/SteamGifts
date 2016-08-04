@@ -37,21 +37,27 @@ public class POSTEnterGiveaway extends AsyncTask<String, Void, String>
         try {
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestProperty("Cookie", cookie);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            ContentValues vals = new ContentValues();
-            vals.put("xsrf_token", XSRFtoken + "&");
-            vals.put("code", ga_id );
-            vals.put("do", command+ "&");
+            StringBuilder sb = new StringBuilder();
+            sb.append("xsrf_token=");
+            sb.append(XSRFtoken);
+            sb.append("&");
+            sb.append("code=");
+            sb.append(ga_id);
+            sb.append("&");
+            sb.append("do=");
+            sb.append(command);
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            vals.toString();
-            writer.write(vals.toString());
+            writer.write(sb.toString());
             writer.flush();
             writer.close();
             os.close();

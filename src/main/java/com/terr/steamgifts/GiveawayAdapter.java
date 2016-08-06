@@ -57,6 +57,11 @@ public class GiveawayViewHolder extends RecyclerView.ViewHolder {
             int color = holder.itemView.getContext().getResources().getColor(R.color.giveawayEntered);
             holder.itemView.setBackgroundColor(color);
         }
+        else if(ga.isFeatured)
+        {
+            int color = holder.itemView.getContext().getResources().getColor(R.color.giveawayFeatured);
+            holder.itemView.setBackgroundColor(color);
+        }
         else
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));

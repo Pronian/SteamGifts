@@ -32,6 +32,7 @@ public class EnterGAClickListener implements ClickListener
 
     @Override
     public void onClick(View view, int position) {
+        if(giveawayList.get(position).sg_id.equals("0")) return;
         String result = "Parse error";
         GiveawayRowData ga = giveawayList.get(position);
         POSTEnterGiveaway eg = new POSTEnterGiveaway();
@@ -44,7 +45,8 @@ public class EnterGAClickListener implements ClickListener
             if(giveawayList.get(position).isEntered)
             {
                 command = context.getResources().getString(R.string.command_leave);
-                color = context.getResources().getColor(R.color.colorMainText);
+                if(giveawayList.get(position).isFeatured) color = context.getResources().getColor(R.color.giveawayFeatured);
+                else color = context.getResources().getColor(R.color.colorMainText);
                 mess = context.getResources().getText(R.string.succ_leave);
                 isEntered = false;
             }

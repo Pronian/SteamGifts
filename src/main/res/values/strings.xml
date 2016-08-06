@@ -25,8 +25,12 @@
     <string name="err_connection">"Couldn't connect to SteamGifts!"</string>
     <string name="err_logged_out">"Logged out!"</string>
     <string name="err_no_content">"SteamGifts appears to be down or inaccessible!"</string>
-<string name="command_enter">entry_insert</string>
+    <string name="command_enter">entry_insert</string>
     <string name="command_leave">entry_delete</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="sett_featured_key">hideFeatured</string>
+-
+
+    <string name="sett_featured_title">Hide featured giveaways (yellow background) in the All Giveaways category</string>
 </resources>

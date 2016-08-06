@@ -2,6 +2,8 @@ package com.terr.steamgifts;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -32,9 +34,10 @@ public class GiveawaysActivity extends AppCompatActivity
     private RecyclerView.LayoutManager layoutManager;
     private List<GiveawayRowData> giveawayList = new ArrayList<>();
     private String error = "";
+    boolean hideFeaturedAll = false;
+
     //TODO refresh button
     //TODO multiple pages
-    //TODO mark featured
     //TODO hide featured option
     //TODO no giveaways found message
 
@@ -73,18 +76,44 @@ public class GiveawaysActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
         //Recycler View End
 
-        prepareGiveawayData(true);
+        updateSettings();
+        prepareGiveawayData(true, !hideFeaturedAll);
 
     }
 
-    private void prepareGiveawayData(boolean notify)
+    @Override
+    protected void onResume()
+    {
+        updateSettings();
+        super.onResume();
+    }
+
+    private void updateSettings()
+    {
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.title_activity_settings), Context.MODE_MULTI_PROCESS);
+        hideFeaturedAll = sharedPref.getBoolean(getString(R.string.sett_featured_key),false);
+    }
+
+    private void prepareGiveawayData(boolean notify, boolean showFeatured)
     {
         giveawayList.clear();
         error = "";
         int n = giveawayParser.getGiveawayNumber();
+        int i = 0;
         try
         {
-            for (int i = 0; i < n; i++)
+            if(showFeatured)
+            {
+                for( ; i < giveawayParser.featuredNumber; i++)
+                {
+                    giveawayList.add(giveawayParser.getGiveaway(i));
+                }
+            }
+            else
+            {
+                i = giveawayParser.featuredNumber;
+            }
+            for ( ; i < n; i++)
             {
                 giveawayList.add(giveawayParser.getGiveaway(i));
             }
@@ -92,6 +121,12 @@ public class GiveawaysActivity extends AppCompatActivity
         {
             error = e.getMessage();
         }
+
+        if(giveawayList.isEmpty())
+        {
+            giveawayList.add(new GiveawayRowData("No giveaways found in this category.",false,false,"","","","0"));
+        }
+
         if (notify) adapter.notifyDataSetChanged();
     }
 
@@ -147,15 +182,24 @@ public class GiveawaysActivity extends AppCompatActivity
     {
         String page = "";
         String title = "";
+        boolean showFeatured = false;
         final Context context = this.getApplicationContext();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_all)
+        updateSettings();
+        if (id == R.id.nav_settings)
+        {
+            startActivity(new Intent(this,SettingsActivity.class));
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+        else if (id == R.id.nav_all)
         {
             page = getString(R.string.sg_mainpage);
             title = getString(R.string.sg_mainpage_title);
-
+            showFeatured = !hideFeaturedAll;
         } else if (id == R.id.nav_wishlist)
         {
             page = getString(R.string.sg_wishlist);
@@ -172,13 +216,11 @@ public class GiveawaysActivity extends AppCompatActivity
         {
             page = getString(R.string.sg_new);
             title = getString(R.string.sg_new_title);
-        } else if (id == R.id.nav_send)
-        {
-
         }
         final String fPage = page;
         final String fTitle = title;
         final ProgressDialog progressDialog = new ProgressDialog(this);
+        final Boolean fShowFeatured = showFeatured;
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
@@ -190,7 +232,7 @@ public class GiveawaysActivity extends AppCompatActivity
             public void run()
             {
                 giveawayParser = new GiveawayParser(fPage, context);
-                prepareGiveawayData(false);
+                prepareGiveawayData(false, fShowFeatured);
                 runOnUiThread(new Runnable()
                 {
                     @Override
@@ -217,7 +259,6 @@ public class GiveawaysActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        //progressDialog.cancel();
         return true;
     }
 }

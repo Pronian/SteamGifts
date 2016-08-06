@@ -16,6 +16,7 @@ public class GiveawayParser
     public String errMess;
     public short points;
 
+    public int featuredNumber;
     public String XSRFtoken;
 
     private Document pageDoc;
@@ -29,6 +30,8 @@ public class GiveawayParser
         {
             String pageContent = httpRequestGET.execute(this.giveaway_url, CookieSync.getCookie(this.context)).get();
             pageDoc = Jsoup.parse(pageContent);
+            featuredNumber = getFeaturedGiveawayNumber();
+
         } catch (Exception e)
         {
             errMess = context.getResources().getString(R.string.err_connection);
@@ -113,6 +116,11 @@ public class GiveawayParser
     public int getGiveawayNumber()
     {
         return pageDoc.getElementsByClass("giveaway__row-outer-wrap").size();
+    }
+
+    public int getFeaturedGiveawayNumber()
+    {
+        return pageDoc.getElementsByClass("pinned-giveaways__outer-wrap").first().getElementsByClass("giveaway__row-outer-wrap").size();
     }
 
     public String getGiveawayNameAndPoints(int n)
@@ -238,9 +246,13 @@ public class GiveawayParser
         {
             throw new SiteDataException(context.getResources().getString(R.string.err_no_content));
         }
+        Boolean isFeatured;
+        if (n + 1 <= featuredNumber) isFeatured = true;
+        else isFeatured = false;
 
         return new GiveawayRowData(nameAndPoints.text(),
                 divFade.hasClass("is-faded"),
+                isFeatured,
                 timeLeft2.text(),
                 entries.text() + " • " +comments.text(),
                 sUrl,

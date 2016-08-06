@@ -8,9 +8,10 @@ public class GiveawayRowData
     public String sg_id;
     public String entries;
     public boolean isEntered;
+    public boolean isFeatured;
     public String url;
 
-    public GiveawayRowData(String title, Boolean isEntered, String timeRemaining, String entries, String url,String sg_id)
+    public GiveawayRowData(String title, Boolean isEntered, Boolean isFeatured, String timeRemaining, String entries, String url,String sg_id)
     {
         this.title = title;
         this.timeRemaining = timeRemaining;
@@ -18,5 +19,6 @@ public class GiveawayRowData
         this.sg_id = sg_id;
         this.isEntered = isEntered;
         this.url = url;
+        this.isFeatured = isFeatured;
     }
 }

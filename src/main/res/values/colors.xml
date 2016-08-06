@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorMainText">#FFFFFF</color>
     <color name="giveawayEntered">#C5E1A5</color>
+    <color name="giveawayFeatured">#FFF59D</color>
 </resources>

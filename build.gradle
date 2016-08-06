@@ -8,8 +8,8 @@ android {
         applicationId "com.terr.steamgifts"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 5
-        versionName "0.5"
+        versionCode 6
+        versionName "0.6"
     }
     buildTypes {
         release {
@@ -22,10 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile files('libs/jsoup-1.9.2.jar')
+    compile files('libs/picasso-2.5.2.jar')
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:design:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'
     compile 'com.android.support:gridlayout-v7:24.1.1'
-    compile files('libs/jsoup-1.9.2.jar')
-    compile files('libs/picasso-2.5.2.jar')
+    compile 'com.android.support:support-v4:24.1.1'
 }

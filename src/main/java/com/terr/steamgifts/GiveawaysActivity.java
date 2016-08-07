@@ -1,5 +1,6 @@
 package com.terr.steamgifts;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,10 @@ public class GiveawaysActivity extends AppCompatActivity
     private RecyclerView.LayoutManager layoutManager;
     private List<GiveawayRowData> giveawayList = new ArrayList<>();
     private String error = "";
-    boolean hideFeaturedAll = false;
+    private boolean hideFeaturedAll = false;
+    private String currentPageUrl;
+    private short currentPageNumber = 1;
+    final private Context mContext = this;
 
     //TODO refresh button
     //TODO multiple pages
@@ -60,8 +64,9 @@ public class GiveawaysActivity extends AppCompatActivity
 
         setTitle(getString(R.string.sg_mainpage_title));
 
+        currentPageUrl = getString(R.string.sg_mainpage);
 
-        giveawayParser = new GiveawayParser(getString(R.string.sg_mainpage), this);
+        giveawayParser = new GiveawayParser(currentPageUrl, this);
 
         //Recycler View Start
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -74,6 +79,41 @@ public class GiveawaysActivity extends AppCompatActivity
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) layoutManager)
+        {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount)
+            {
+                final ProgressDialog progressDialog = new ProgressDialog(mContext);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setMessage("Loading next page..");
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                Thread mThread = new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        addGiveawayData(false);
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                adapter.notifyDataSetChanged();
+                                txtPoints.setText(giveawayParser.getPoints());
+                                progressDialog.dismiss();
+                            }
+                        });
+
+
+                    }
+                };
+                mThread.start();
+            }
+        });
         //Recycler View End
 
         updateSettings();
@@ -130,6 +170,43 @@ public class GiveawaysActivity extends AppCompatActivity
         if (notify) adapter.notifyDataSetChanged();
     }
 
+    private void addGiveawayData(boolean notify)
+    {
+        if(currentPageNumber == 1)
+        {
+            currentPageNumber++;
+            currentPageUrl = currentPageUrl + "?page=" + currentPageNumber;
+            giveawayParser = new GiveawayParser(currentPageUrl, this);
+        }
+        else
+        {
+            currentPageNumber++;
+            StringBuilder sb = new StringBuilder();
+            sb.append(currentPageUrl);
+            while (sb.charAt(sb.length() - 1) != '?')
+            {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            sb.append("page=");
+            sb.append(currentPageNumber);
+
+            giveawayParser = new GiveawayParser(sb.toString(), this);
+        }
+        int n = giveawayParser.getGiveawayNumber();
+        try
+        {
+            for ( int i = giveawayParser.featuredNumber ; i < n; i++)
+            {
+                giveawayList.add(giveawayParser.getGiveaway(i));
+            }
+        } catch (SiteDataException e)
+        {
+            error = e.getMessage();
+        }
+        if(notify)adapter.notifyDataSetChanged();
+
+    }
+
     @Override
     public void onBackPressed()
     {
@@ -180,7 +257,6 @@ public class GiveawaysActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item)
     {
-        String page = "";
         String title = "";
         boolean showFeatured = false;
         final Context context = this.getApplicationContext();
@@ -197,27 +273,27 @@ public class GiveawaysActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_all)
         {
-            page = getString(R.string.sg_mainpage);
+            currentPageUrl = getString(R.string.sg_mainpage);
             title = getString(R.string.sg_mainpage_title);
             showFeatured = !hideFeaturedAll;
         } else if (id == R.id.nav_wishlist)
         {
-            page = getString(R.string.sg_wishlist);
+            currentPageUrl = getString(R.string.sg_wishlist);
             title = getString(R.string.sg_wishlist_title);
         } else if (id == R.id.nav_recommended)
         {
-            page = getString(R.string.sg_recommended);
+            currentPageUrl = getString(R.string.sg_recommended);
             title = getString(R.string.sg_recommended_title);
         } else if (id == R.id.nav_group)
         {
-            page = getString(R.string.sg_group);
+            currentPageUrl = getString(R.string.sg_group);
             title = getString(R.string.sg_group_title);
         } else if (id == R.id.nav_new)
         {
-            page = getString(R.string.sg_new);
+            currentPageUrl = getString(R.string.sg_new);
             title = getString(R.string.sg_new_title);
         }
-        final String fPage = page;
+        final String fPage = currentPageUrl;
         final String fTitle = title;
         final ProgressDialog progressDialog = new ProgressDialog(this);
         final Boolean fShowFeatured = showFeatured;
@@ -226,6 +302,7 @@ public class GiveawaysActivity extends AppCompatActivity
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+        currentPageNumber = 1;
         Thread mThread = new Thread()
         {
             @Override

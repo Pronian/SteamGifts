@@ -1,7 +1,5 @@
 package com.terr.steamgifts;
 
-
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
@@ -10,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class EnterGAClickListener implements ClickListener
 {

@@ -15,6 +15,7 @@ public class GiveawayParser
     private Context context;
     public String errMess;
     public short points;
+    public boolean hasNextPage;
 
     public int featuredNumber;
     public String XSRFtoken;
@@ -31,6 +32,9 @@ public class GiveawayParser
             String pageContent = httpRequestGET.execute(this.giveaway_url, CookieSync.getCookie(this.context)).get();
             pageDoc = Jsoup.parse(pageContent);
             featuredNumber = getFeaturedGiveawayNumber();
+            Elements els = pageDoc.getElementsByClass("pagination__navigation");
+            if(els == null) hasNextPage = false;
+            else hasNextPage = els.first().text().contains("Next");
 
         } catch (Exception e)
         {
@@ -258,6 +262,13 @@ public class GiveawayParser
                 sUrl,
                 ID.attr("href").split("/")[2]
                 );
+    }
+
+    public boolean hasNextPage()
+    {
+        Elements els = pageDoc.getElementsByClass("pagination__navigation");
+        if(els == null) return false;
+        return els.first().text().contains("Next");
     }
 
 

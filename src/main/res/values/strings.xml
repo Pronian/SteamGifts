@@ -4,7 +4,7 @@
     <string name="title_activity_login">"Login with Steam"</string>
     <string name="cookie_key">COOKIE</string>
     <string name="title_activity_giveaways">"All"</string>
-    <string name="sg_mainpage">"https://www.steamgifts.com"</string>
+    <string name="sg_mainpage">"https://www.steamgifts.com/giveaways/search"</string>
     <string name="sg_mainpage_title">"All Giveaways"</string>
     <string name="sg_wishlist">"https://www.steamgifts.com/giveaways/search?type=wishlist"</string>
     <string name="sg_wishlist_title">Wishlist</string>

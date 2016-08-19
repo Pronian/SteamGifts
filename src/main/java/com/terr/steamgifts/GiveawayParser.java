@@ -104,6 +104,19 @@ public class GiveawayParser
         return el.text();
     }
 
+    public String getUserAvatar() throws SiteDataException
+    {
+        Element el = pageDoc.getElementsByClass("nav__avatar-inner-wrap").first();
+        if (el == null)
+        {
+            throw new SiteDataException(context.getResources().getString(R.string.err_logged_out))  ;
+        }
+        String sUrl = el.attr("style").split("\\(")[1];
+        sUrl = sUrl.substring(0,sUrl.length()-2);
+        return sUrl;
+
+    }
+
     public String getXSRFtoken()
     {
         ClearErr();

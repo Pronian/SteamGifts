@@ -88,6 +88,6 @@ public class EnterGAClickListener implements ClickListener
 
     @Override
     public void onLongClick(View view, int position) {
-
+        //TODO add menu options: Details, Steam page, Hide Giveaway
     }
 }

@@ -19,8 +19,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +45,6 @@ public class GiveawaysActivity extends AppCompatActivity
     final private Context mContext = this;
 
     //TODO refresh button
-    //TODO multiple pages
-    //TODO hide featured option
-    //TODO no giveaways found message
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -61,6 +62,7 @@ public class GiveawaysActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
 
         setTitle(getString(R.string.sg_mainpage_title));
 
@@ -78,6 +80,7 @@ public class GiveawaysActivity extends AppCompatActivity
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) layoutManager)
@@ -115,6 +118,18 @@ public class GiveawaysActivity extends AppCompatActivity
             }
         });
         //Recycler View End
+
+        ImageView usrPic = (ImageView) header.findViewById(R.id.userPic);
+        try
+        {
+            Picasso.with(this).load(giveawayParser.getUserAvatar()).into(usrPic);
+        }
+        catch (SiteDataException e)
+        {
+            //TODO manage this
+        }
+        TextView usrName = (TextView) header.findViewById(R.id.userName);
+        usrName.setText(giveawayParser.getAccountName() + " • " + giveawayParser.getLevel());
 
         updateSettings();
         prepareGiveawayData(true, !hideFeaturedAll);
@@ -233,6 +248,7 @@ public class GiveawaysActivity extends AppCompatActivity
         txtPoints.setTypeface(null, Typeface.BOLD);
         txtPoints.setTextSize(14);
         menu.add(0, 0, 1, points).setActionView(txtPoints).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
 
         return true;
     }

@@ -15,4 +15,20 @@
         android:layout_height="wrap_content"
         android:text="@string/sett_featured_title"
         android:id="@+id/set_hide_featured"/>
+
+
+    <Button
+        android:id="@+id/sync_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/set_hide_featured"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_marginTop="15dp"
+        android:textSize="17sp"
+        android:text="@string/sett_sync_butt_title"
+        />
 </RelativeLayout>

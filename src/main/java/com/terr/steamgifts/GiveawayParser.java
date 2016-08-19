@@ -3,6 +3,7 @@ package com.terr.steamgifts;
 
 import android.content.Context;
 import android.net.ParseException;
+import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,12 +34,13 @@ public class GiveawayParser
             pageDoc = Jsoup.parse(pageContent);
             featuredNumber = getFeaturedGiveawayNumber();
             Elements els = pageDoc.getElementsByClass("pagination__navigation");
-            if(els == null) hasNextPage = false;
+            if(els == null || els.size() == 0) hasNextPage = false;
             else hasNextPage = els.first().text().contains("Next");
-
+            Log.i(this.toString(), "Initialized with url: " + giveaway_url + ",\nand context: " + context.toString());
         } catch (Exception e)
         {
             errMess = context.getResources().getString(R.string.err_connection);
+            Log.e(this.toString(),"Error in constructor: " + e.getMessage());
         }
     }
 

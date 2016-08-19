@@ -1,6 +1,7 @@
 package com.terr.steamgifts;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -54,8 +55,8 @@ public class EnterGAClickListener implements ClickListener
                 mess = context.getResources().getText(R.string.succ_enter);
                 isEntered = true;
             }
-
-            result = eg.execute(context.getResources().getString(R.string.sg_enter_link), CookieSync.getCookie(context), giveawayParser.getXSRFtoken(), ga.sg_id, command).get();
+            CookieSync.updateToken(giveawayParser.getXSRFtoken(),context);
+            result = eg.execute(context.getResources().getString(R.string.sg_enter_link), CookieSync.getCookie(context), CookieSync.getToken(context), ga.sg_id, command).get();
 
             JSONObject jObject = new JSONObject(result);
             resultType = jObject.getString("type");
@@ -76,12 +77,12 @@ public class EnterGAClickListener implements ClickListener
         }
         catch (JSONException e)
         {
-            Toast.makeText(context, result , Toast.LENGTH_LONG).show();
+            Log.e(this.toString(),"JSON Error upon parsing request response: " + e.getMessage() + ",\nresult to be parsed: " + result);
         }
         catch (Exception e)
         {
             //TODO Add error popup
-            e.printStackTrace();
+            Log.e(this.toString(),"Error upon executing request: " + e.getMessage());
         }
 
     }
@@ -89,5 +90,6 @@ public class EnterGAClickListener implements ClickListener
     @Override
     public void onLongClick(View view, int position) {
         //TODO add menu options: Details, Steam page, Hide Giveaway
+        Log.v(this.toString(),"LongClicked on giveaway number " + position);
     }
 }

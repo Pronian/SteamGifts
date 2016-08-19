@@ -1,6 +1,5 @@
 package com.terr.steamgifts;
 
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +34,6 @@ public class GiveawaysActivity extends AppCompatActivity
 {
     public TextView txtPoints;
     GiveawayParser giveawayParser;
-    private RecyclerView recyclerView;
     private GiveawayAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<GiveawayRowData> giveawayList = new ArrayList<>();
@@ -71,7 +70,7 @@ public class GiveawaysActivity extends AppCompatActivity
         giveawayParser = new GiveawayParser(currentPageUrl, this);
 
         //Recycler View Start
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new EnterGAClickListener(giveawayList, giveawayParser, this)));
         adapter = new GiveawayAdapter(giveawayList);
         recyclerView.setHasFixedSize(true);
@@ -88,9 +87,10 @@ public class GiveawaysActivity extends AppCompatActivity
             @Override
             public void onLoadMore(int page, int totalItemsCount)
             {
+                if(giveawayParser.hasNextPage == false) return;
                 final ProgressDialog progressDialog = new ProgressDialog(mContext);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setMessage("Loading next page..");
+                progressDialog.setMessage("Loading next page...");
                 progressDialog.setIndeterminate(true);
                 progressDialog.setCancelable(false);
                 progressDialog.show();
@@ -110,7 +110,7 @@ public class GiveawaysActivity extends AppCompatActivity
                                 progressDialog.dismiss();
                             }
                         });
-
+                Log.i(this.toString(),"Loaded more giveaways, current number: " + adapter.getItemCount());
 
                     }
                 };
@@ -127,6 +127,7 @@ public class GiveawaysActivity extends AppCompatActivity
         catch (SiteDataException e)
         {
             //TODO manage this
+            Log.e(this.toString(), "Parse error: " + e.getMessage());
         }
         TextView usrName = (TextView) header.findViewById(R.id.userName);
         usrName.setText(giveawayParser.getAccountName() + " • " + giveawayParser.getLevel());
@@ -175,6 +176,7 @@ public class GiveawaysActivity extends AppCompatActivity
         } catch (SiteDataException e)
         {
             error = e.getMessage();
+            Log.e(this.toString(), "Parse error upon loading giveaways: " + e.getMessage());
         }
 
         if(giveawayList.isEmpty())
@@ -192,6 +194,7 @@ public class GiveawaysActivity extends AppCompatActivity
             currentPageNumber++;
             currentPageUrl = currentPageUrl + "?page=" + currentPageNumber;
             giveawayParser = new GiveawayParser(currentPageUrl, this);
+            Log.i(this.toString(), "Loaded new giveaway page with url: " + currentPageUrl);
         }
         else
         {
@@ -206,6 +209,7 @@ public class GiveawaysActivity extends AppCompatActivity
             sb.append(currentPageNumber);
 
             giveawayParser = new GiveawayParser(sb.toString(), this);
+            Log.i(this.toString(), "Loaded next giveaway page with url: " + sb.toString());
         }
         int n = giveawayParser.getGiveawayNumber();
         try
@@ -217,6 +221,7 @@ public class GiveawaysActivity extends AppCompatActivity
         } catch (SiteDataException e)
         {
             error = e.getMessage();
+            Log.e(this.toString(), "Parse error upon adding giveaways: " + e.getMessage());
         }
         if(notify)adapter.notifyDataSetChanged();
 
@@ -282,6 +287,7 @@ public class GiveawaysActivity extends AppCompatActivity
         updateSettings();
         if (id == R.id.nav_settings)
         {
+            CookieSync.updateToken(giveawayParser.getXSRFtoken(),context);
             startActivity(new Intent(this,SettingsActivity.class));
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);

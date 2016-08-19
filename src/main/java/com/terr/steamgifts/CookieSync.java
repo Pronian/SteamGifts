@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 public class CookieSync
 {
     private static String cookie = "";
+    private static String token = "";
 
     public static void updateCookie(String cookie, Context context)
     {
@@ -31,5 +32,26 @@ public class CookieSync
             cookie = sharedPref.getString(key, "");
         }
         return cookie;
+    }
+
+    public  static  String getToken(Context context)
+    {
+        if (token.isEmpty())
+        {
+            String key = context.getResources().getString(R.string.cookie_key);
+            SharedPreferences sharedPref = context.getSharedPreferences( key, Context.MODE_PRIVATE);
+            token = sharedPref.getString("token", "");
+        }
+        return token;
+    }
+
+    public static void updateToken(String token, Context context)
+    {
+        String key = context.getResources().getString(R.string.cookie_key);
+        SharedPreferences sharedPref = context.getSharedPreferences( key, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("token", token);
+        editor.commit();
+        CookieSync.token = token;
     }
 }

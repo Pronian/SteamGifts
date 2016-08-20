@@ -36,9 +36,6 @@ public class SettingsActivity extends AppCompatActivity
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
                 hideFeatured = isChecked;
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(getString(R.string.sett_featured_key), hideFeatured);
-                editor.commit();
             }
         });
         switchFeatured.setChecked(hideFeatured);

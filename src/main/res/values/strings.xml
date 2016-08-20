@@ -4,15 +4,15 @@
     <string name="title_activity_login">"Login with Steam"</string>
     <string name="cookie_key">COOKIE</string>
     <string name="title_activity_giveaways">"All"</string>
-    <string name="sg_mainpage">"https://www.steamgifts.com/giveaways/search"</string>
+    <string name="sg_mainpage">"https://www.steamgifts.com/giveaways/search?a&amp;page=1"</string>
     <string name="sg_mainpage_title">"All Giveaways"</string>
-    <string name="sg_wishlist">"https://www.steamgifts.com/giveaways/search?type=wishlist"</string>
+    <string name="sg_wishlist">"https://www.steamgifts.com/giveaways/search?type=wishlist&amp;page=1"</string>
     <string name="sg_wishlist_title">Wishlist</string>
-    <string name="sg_recommended">"https://www.steamgifts.com/giveaways/search?type=recommended"</string>
+    <string name="sg_recommended">"https://www.steamgifts.com/giveaways/search?type=recommended&amp;page=1"</string>
     <string name="sg_recommended_title">Recomended</string>
-    <string name="sg_group">"https://www.steamgifts.com/giveaways/search?type=group"</string>
+    <string name="sg_group">"https://www.steamgifts.com/giveaways/search?type=group&amp;page=1"</string>
     <string name="sg_group_title">Group</string>
-    <string name="sg_new">"https://www.steamgifts.com/giveaways/search?type=new"</string>
+    <string name="sg_new">"https://www.steamgifts.com/giveaways/search?type=new&amp;page=1"</string>
     <string name="sg_new_title">New Giveaways</string>
 
     <string name="sg_enter_link">"https://www.steamgifts.com/ajax.php"</string>
@@ -31,7 +31,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="sett_featured_key">hideFeatured</string>
 
--
+    -
 
     <string name="sett_featured_title">Hide featured giveaways (yellow background) in the All Giveaways category</string>
     <string name="sett_sync_butt_title">Sync with Steam</string>

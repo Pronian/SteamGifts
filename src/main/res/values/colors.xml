@@ -6,4 +6,5 @@
     <color name="colorMainText">#FFFFFF</color>
     <color name="giveawayEntered">#C5E1A5</color>
     <color name="giveawayFeatured">#FFF59D</color>
+    <color name="black">#000000</color>
 </resources>

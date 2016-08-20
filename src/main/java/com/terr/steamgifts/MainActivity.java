@@ -18,11 +18,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         if (!CookieSync.getCookie(this).isEmpty())
         {
-            Log.i(this.toString(),"Cookie fetched from recources: " + CookieSync.getCookie(this));
+            Log.i(this.toString(), "Cookie fetched from resources: " + CookieSync.getCookie(this));
             Intent intent = new Intent(this, GiveawaysActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             this.startActivity(intent);
-        }
-        else
+        } else
         {
             setTitle(R.string.title_activity_login);
             Log.i(this.toString(), "Not logged in, starting webview.");
@@ -31,5 +31,11 @@ public class MainActivity extends AppCompatActivity
             myWebView.getSettings().setJavaScriptEnabled(true);
             myWebView.loadUrl("http://www.steamgifts.com/?login");
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        this.moveTaskToBack(true);
     }
 }

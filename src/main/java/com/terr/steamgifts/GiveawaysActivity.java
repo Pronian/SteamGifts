@@ -87,7 +87,7 @@ public class GiveawaysActivity extends AppCompatActivity
             @Override
             public void onLoadMore(int page, int totalItemsCount)
             {
-                if(giveawayParser.hasNextPage == false) return;
+                if (giveawayParser.hasNextPage == false) return;
                 final ProgressDialog progressDialog = new ProgressDialog(mContext);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setMessage("Loading next page...");
@@ -110,7 +110,7 @@ public class GiveawaysActivity extends AppCompatActivity
                                 progressDialog.dismiss();
                             }
                         });
-                Log.i(this.toString(),"Loaded more giveaways, current number: " + adapter.getItemCount());
+                        Log.i(this.toString(), "Loaded more giveaways, current number: " + adapter.getItemCount());
 
                     }
                 };
@@ -123,8 +123,7 @@ public class GiveawaysActivity extends AppCompatActivity
         try
         {
             Picasso.with(this).load(giveawayParser.getUserAvatar()).into(usrPic);
-        }
-        catch (SiteDataException e)
+        } catch (SiteDataException e)
         {
             //TODO manage this
             Log.e(this.toString(), "Parse error: " + e.getMessage());
@@ -147,7 +146,7 @@ public class GiveawaysActivity extends AppCompatActivity
     private void updateSettings()
     {
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.title_activity_settings), Context.MODE_MULTI_PROCESS);
-        hideFeaturedAll = sharedPref.getBoolean(getString(R.string.sett_featured_key),false);
+        hideFeaturedAll = sharedPref.getBoolean(getString(R.string.sett_featured_key), false);
     }
 
     private void prepareGiveawayData(boolean notify, boolean showFeatured)
@@ -158,18 +157,17 @@ public class GiveawaysActivity extends AppCompatActivity
         int i = 0;
         try
         {
-            if(showFeatured)
+            if (showFeatured)
             {
-                for( ; i < giveawayParser.featuredNumber; i++)
+                for (; i < giveawayParser.featuredNumber; i++)
                 {
                     giveawayList.add(giveawayParser.getGiveaway(i));
                 }
-            }
-            else
+            } else
             {
                 i = giveawayParser.featuredNumber;
             }
-            for ( ; i < n; i++)
+            for (; i < n; i++)
             {
                 giveawayList.add(giveawayParser.getGiveaway(i));
             }
@@ -179,9 +177,9 @@ public class GiveawaysActivity extends AppCompatActivity
             Log.e(this.toString(), "Parse error upon loading giveaways: " + e.getMessage());
         }
 
-        if(giveawayList.isEmpty())
+        if (giveawayList.isEmpty())
         {
-            giveawayList.add(new GiveawayRowData("No giveaways found in this category.",false,false,"","","","0"));
+            giveawayList.add(new GiveawayRowData("No giveaways found in this category.", false, false, "", "", "", "0"));
         }
 
         if (notify) adapter.notifyDataSetChanged();
@@ -189,32 +187,21 @@ public class GiveawaysActivity extends AppCompatActivity
 
     private void addGiveawayData(boolean notify)
     {
-        if(currentPageNumber == 1)
+        currentPageNumber++;
+        StringBuilder sb = new StringBuilder();
+        sb.append(currentPageUrl);
+        while (sb.charAt(sb.length() - 1) != '&')
         {
-            currentPageNumber++;
-            currentPageUrl = currentPageUrl + "?page=" + currentPageNumber;
-            giveawayParser = new GiveawayParser(currentPageUrl, this);
-            Log.i(this.toString(), "Loaded new giveaway page with url: " + currentPageUrl);
+            sb.deleteCharAt(sb.length() - 1);
         }
-        else
-        {
-            currentPageNumber++;
-            StringBuilder sb = new StringBuilder();
-            sb.append(currentPageUrl);
-            while (sb.charAt(sb.length() - 1) != '?')
-            {
-                sb.deleteCharAt(sb.length() - 1);
-            }
-            sb.append("page=");
-            sb.append(currentPageNumber);
+        sb.append("page=");
+        sb.append(currentPageNumber);
 
-            giveawayParser = new GiveawayParser(sb.toString(), this);
-            Log.i(this.toString(), "Loaded next giveaway page with url: " + sb.toString());
-        }
+        giveawayParser = new GiveawayParser(sb.toString(), this);
         int n = giveawayParser.getGiveawayNumber();
         try
         {
-            for ( int i = giveawayParser.featuredNumber ; i < n; i++)
+            for (int i = giveawayParser.featuredNumber; i < n; i++)
             {
                 giveawayList.add(giveawayParser.getGiveaway(i));
             }
@@ -223,7 +210,7 @@ public class GiveawaysActivity extends AppCompatActivity
             error = e.getMessage();
             Log.e(this.toString(), "Parse error upon adding giveaways: " + e.getMessage());
         }
-        if(notify)adapter.notifyDataSetChanged();
+        if (notify) adapter.notifyDataSetChanged();
 
     }
 
@@ -236,7 +223,7 @@ public class GiveawaysActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else
         {
-            //super.onBackPressed();
+            this.moveTaskToBack(true);
         }
     }
 
@@ -287,13 +274,12 @@ public class GiveawaysActivity extends AppCompatActivity
         updateSettings();
         if (id == R.id.nav_settings)
         {
-            CookieSync.updateToken(giveawayParser.getXSRFtoken(),context);
-            startActivity(new Intent(this,SettingsActivity.class));
+            CookieSync.updateToken(giveawayParser.getXSRFtoken(), context);
+            startActivity(new Intent(this, SettingsActivity.class));
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
-        }
-        else if (id == R.id.nav_all)
+        } else if (id == R.id.nav_all)
         {
             currentPageUrl = getString(R.string.sg_mainpage);
             title = getString(R.string.sg_mainpage_title);
@@ -342,10 +328,10 @@ public class GiveawaysActivity extends AppCompatActivity
                         setTitle(fTitle);
                         layoutManager.scrollToPosition(0);
                         progressDialog.dismiss();
-                        if(!error.isEmpty())
+                        if (!error.isEmpty())
                         {
                             //TODO replace with popup error
-                            Toast.makeText(context,error,Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, error, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

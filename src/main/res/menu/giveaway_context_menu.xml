@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/contm_details"
+        android:title="@string/contm_details_title" />
+    <item
+        android:id="@+id/contm_steam_page"
+        android:title="@string/contm_steam_page_title" />
+    <item
+        android:id="@+id/contm_hide"
+        android:title="@string/contm_hide_title" />
+</menu>

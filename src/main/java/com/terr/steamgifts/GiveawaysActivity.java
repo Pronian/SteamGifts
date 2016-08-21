@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +18,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -81,6 +84,8 @@ public class GiveawaysActivity extends AppCompatActivity
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
+
+        registerForContextMenu(recyclerView);
 
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) layoutManager)
         {
@@ -179,7 +184,7 @@ public class GiveawaysActivity extends AppCompatActivity
 
         if (giveawayList.isEmpty())
         {
-            giveawayList.add(new GiveawayRowData("No giveaways found in this category.", false, false, "", "", "", "0"));
+            giveawayList.add(new GiveawayRowData("No giveaways found in this category.", false, false, "", "", "", "0", "", ""));
         }
 
         if (notify) adapter.notifyDataSetChanged();
@@ -344,6 +349,80 @@ public class GiveawaysActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        // Inflate Menu from xml resource
+        MenuInflater menuInflater = this.getMenuInflater();
+        menuInflater.inflate(R.menu.giveaway_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        ContextMenuRecyclerView.RecyclerContextMenuInfo info = (ContextMenuRecyclerView.RecyclerContextMenuInfo) item.getMenuInfo();
+        final int n = info.position;
+
+        int itemId = item.getItemId();
+        if (itemId == R.id.contm_steam_page)
+        {
+            String link = giveawayList.get(n).steamLink;
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+        } else if (itemId == R.id.contm_details)
+        {
+
+        } else if (itemId == R.id.contm_hide)
+        {
+            final Context context = this;
+            Thread mThread = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String gameId = giveawayList.get(n).dataGameId;
+                    POSTGeneral req = new POSTGeneral();
+                    String cookie = CookieSync.getCookie(context);
+                    StringBuilder reqData = new StringBuilder();
+                    reqData.append("xsrf_token=");
+                    reqData.append(CookieSync.getToken(context));
+                    reqData.append("&game_id=");
+                    reqData.append(gameId);
+                    reqData.append("&do=hide_giveaways_by_game_id");
+                    try
+                    {
+                        req.execute(context.getString(R.string.sg_enter_link), cookie, reqData.toString());
+                        for (int i = 0; i < giveawayList.size(); i++)
+                        {
+                            if (gameId.equals(giveawayList.get(i).dataGameId))
+                            {
+                                giveawayList.remove(i);
+                                Log.d(toString(), "Giveaway number " + i + " removed from list");
+                            }
+                        }
+
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(context, "Game Hidden", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (Exception e)
+                    {
+                        Log.e(this.toString(), "Error upon hiding game: " + e.getMessage());
+                    }
+                }
+            });
+            mThread.start();
+        } else return false;
+
         return true;
     }
 }

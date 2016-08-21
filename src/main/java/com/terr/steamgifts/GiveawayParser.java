@@ -40,7 +40,7 @@ public class GiveawayParser
         } catch (Exception e)
         {
             errMess = context.getResources().getString(R.string.err_connection);
-            Log.e(this.toString(),"Error in constructor: " + e.getMessage());
+            Log.e(this.toString(),"Error in constructor: " + e.getMessage() + "\nUrl: " + giveaway_url);
         }
     }
 
@@ -246,7 +246,9 @@ public class GiveawayParser
         Element ID = giveaway.getElementsByClass("giveaway__heading__name").get(0);
         Element divFade = giveaway.getElementsByTag("div").get(1);
         Element timeLeft1 = giveaway.getElementsByClass("giveaway__columns").first();
-        if(timeLeft1 == null || ID == null || divFade == null)
+        Element steamLinkEl = giveaway.getElementsByClass("giveaway__icon").first();
+        String dataGameId = giveaway.attr("data-game-id");
+        if(timeLeft1 == null || ID == null || divFade == null || steamLinkEl == null)
         {
             throw new SiteDataException(context.getResources().getString(R.string.err_no_content));
         }
@@ -275,7 +277,9 @@ public class GiveawayParser
                 timeLeft2.text(),
                 entries.text() + " • " +comments.text(),
                 sUrl,
-                ID.attr("href").split("/")[2]
+                ID.attr("href").split("/")[2],
+                steamLinkEl.attr("href"),
+                dataGameId
                 );
     }
 

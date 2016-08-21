@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity
             this.startActivity(intent);
         } else
         {
-            setTitle(R.string.title_activity_login);
             Log.i(this.toString(), "Not logged in, starting webview.");
             WebView myWebView = (WebView) findViewById(R.id.webview);
             myWebView.setWebViewClient(new LoginWVC(this));

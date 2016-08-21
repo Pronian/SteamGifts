@@ -22,6 +22,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="contm_details_title">Details</string>
+    <string name="contm_steam_page_title">Open Steam page</string>
+    <string name="contm_hide_title">Hide game</string>
+
     <string name="err_connection">"Couldn't connect to SteamGifts!"</string>
     <string name="err_logged_out">"Logged out!"</string>
     <string name="err_no_content">"SteamGifts appears to be down or inaccessible!"</string>

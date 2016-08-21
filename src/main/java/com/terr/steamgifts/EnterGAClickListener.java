@@ -89,7 +89,7 @@ public class EnterGAClickListener implements ClickListener
 
     @Override
     public void onLongClick(View view, int position) {
-        //TODO add menu options: Details, Steam page, Hide Giveaway
-        Log.v(this.toString(),"LongClicked on giveaway number " + position);
+        Log.d(this.toString(),"LongClicked on giveaway number " + position);
+        view.showContextMenu();
     }
 }
